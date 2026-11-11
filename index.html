@@ -5,85 +5,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inventario de mercadería</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="supabase.css" />
   </head>
   <body>
     <div class="app-shell">
-      <div class="top-metrics">
-        <div class="metric-card">
-          <div class="metric-label">Productos registrados</div>
-          <div id="totalProducts" class="metric-value">0</div>
-        </div>
-
-        <div class="metric-card">
-          <div class="metric-label">Unidades totales</div>
-          <div id="totalUnits" class="metric-value">0</div>
-        </div>
-
-        <div class="metric-card">
-          <div class="metric-label">Productos para reponer</div>
-          <div id="needRestock" class="metric-value warning">0</div>
-        </div>
-      </div>
-
-      <div class="content-grid">
-        <aside class="panel form-panel">
-          <h2>Agregar producto</h2>
-
+      <section id="loginPanel" class="panel auth-panel" aria-labelledby="loginTitle">
+        <p class="auth-kicker">Farmacia Cruz Verde</p>
+        <h1 id="loginTitle">Inventario compartido</h1>
+        <p class="auth-description">Inicia sesión para consultar y actualizar el inventario compartido.</p>
+        <form id="loginForm">
           <div class="field-group">
-            <label for="productName">Nombre del producto <span class="required">*</span></label>
-            <input id="productName" type="text" placeholder="Ej: Paracetamol 500 mg" />
+            <label for="loginEmail">Correo electrónico</label>
+            <input id="loginEmail" type="email" autocomplete="username" required />
           </div>
-
           <div class="field-group">
-            <label for="productCode">Código / descripción</label>
-            <input id="productCode" type="text" placeholder="Ingrese el código o la descripción" />
+            <label for="loginPassword">Contraseña</label>
+            <input id="loginPassword" type="password" autocomplete="current-password" required />
           </div>
+          <button id="loginButton" class="save-btn" type="submit">Iniciar sesión</button>
+          <p id="loginMessage" class="auth-message" role="status" aria-live="polite"></p>
+        </form>
+      </section>
 
-          <div class="two-cols">
+      <div id="inventoryApp" hidden>
+        <header class="app-heading">
+          <div>
+            <p class="auth-kicker">Farmacia Cruz Verde</p>
+            <h1>Control de inventario</h1>
+          </div>
+          <div class="session-controls">
+            <span id="currentUser" class="current-user"></span>
+            <button id="logoutButton" class="logout-btn" type="button">Cerrar sesión</button>
+          </div>
+        </header>
+
+        <p id="appMessage" class="app-message" role="status" aria-live="polite"></p>
+
+        <div class="top-metrics">
+          <div class="metric-card">
+            <div class="metric-label">Productos registrados</div>
+            <div id="totalProducts" class="metric-value">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Unidades totales</div>
+            <div id="totalUnits" class="metric-value">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Productos para reponer</div>
+            <div id="needRestock" class="metric-value warning">0</div>
+          </div>
+        </div>
+
+        <div class="content-grid">
+          <aside class="panel form-panel">
+            <h2>Agregar producto</h2>
             <div class="field-group">
-              <label for="stockDeposito">Stock depósito <span class="required">*</span></label>
-              <input id="stockDeposito" type="number" min="0" value="0" />
+              <label for="productName">Nombre del producto <span class="required">*</span></label>
+              <input id="productName" type="text" placeholder="Ej: Paracetamol 500 mg" required />
             </div>
             <div class="field-group">
-              <label for="stockLocal">Stock local <span class="required">*</span></label>
-              <input id="stockLocal" type="number" min="0" value="0" />
+              <label for="productCode">Código / descripción</label>
+              <input id="productCode" type="text" placeholder="Ingrese el código o la descripción" />
             </div>
-          </div>
+            <div class="two-cols">
+              <div class="field-group">
+                <label for="stockDeposito">Stock depósito <span class="required">*</span></label>
+                <input id="stockDeposito" type="number" min="0" step="1" value="0" required />
+              </div>
+              <div class="field-group">
+                <label for="stockLocal">Stock local <span class="required">*</span></label>
+                <input id="stockLocal" type="number" min="0" step="1" value="0" required />
+              </div>
+            </div>
+            <button id="saveProduct" class="save-btn" type="button">+ Guardar producto</button>
+            <p class="warning-note">Se marcarán para reponer los productos con 3 unidades o menos en total.</p>
+          </aside>
 
-          <button id="saveProduct" class="save-btn">+ Guardar producto</button>
-
-          <p class="warning-note">El sistema marcará en rojo los productos cuyo stock total sea de 3 unidades o menos.</p>
-        </aside>
-
-        <main class="panel inventory-panel">
-          <div class="inventory-header">
-            <h2>Inventario de mercadería</h2>
-            <button class="csv-btn">Exportar CSV</button>
-          </div>
-
-          <div class="search-row">
-            <input id="searchInput" type="text" placeholder="Buscar por nombre, descripción o código..." />
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Producto</th>
-                  <th>Depósito</th>
-                  <th>Local</th>
-                  <th>Total</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="inventoryTableBody"></tbody>
-            </table>
-          </div>
-        </main>
+          <main class="panel inventory-panel">
+            <div class="inventory-header">
+              <h2>Inventario de mercadería</h2>
+              <button class="csv-btn" type="button" disabled title="La exportación CSV no está disponible todavía">Exportar CSV</button>
+            </div>
+            <div class="search-row">
+              <input id="searchInput" type="search" placeholder="Buscar por nombre, descripción o código..." aria-label="Buscar productos" />
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Producto</th><th>Depósito</th><th>Local</th><th>Total</th><th>Estado</th><th>Acciones</th></tr>
+                </thead>
+                <tbody id="inventoryTableBody"></tbody>
+              </table>
+              <p id="emptyInventory" class="empty-inventory" hidden>No hay productos registrados todavía.</p>
+            </div>
+          </main>
+        </div>
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
