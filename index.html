@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inventario de mercadería</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="top-metrics">
+        <div class="metric-card">
+          <div class="metric-label">Productos registrados</div>
+          <div id="totalProducts" class="metric-value">0</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Unidades totales</div>
+          <div id="totalUnits" class="metric-value">0</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Productos para reponer</div>
+          <div id="needRestock" class="metric-value warning">0</div>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <aside class="panel form-panel">
+          <h2>Agregar producto</h2>
+
+          <div class="field-group">
+            <label for="productName">Nombre del producto <span class="required">*</span></label>
+            <input id="productName" type="text" placeholder="Ej: Paracetamol 500 mg" />
+          </div>
+
+          <div class="field-group">
+            <label for="productCode">Código</label>
+            <input id="productCode" type="text" placeholder="Ej: 7795025025395" />
+          </div>
+
+          <div class="two-cols">
+            <div class="field-group">
+              <label for="stockDeposito">Stock depósito <span class="required">*</span></label>
+              <input id="stockDeposito" type="number" min="0" value="0" />
+            </div>
+            <div class="field-group">
+              <label for="stockLocal">Stock local <span class="required">*</span></label>
+              <input id="stockLocal" type="number" min="0" value="0" />
+            </div>
+          </div>
+
+          <button id="saveProduct" class="save-btn">+ Guardar producto</button>
+
+          <p class="warning-note">El sistema marcará en rojo los productos cuyo stock total sea de 3 unidades o menos.</p>
+        </aside>
+
+        <main class="panel inventory-panel">
+          <div class="inventory-header">
+            <h2>Inventario de mercadería</h2>
+            <button class="csv-btn">Exportar CSV</button>
+          </div>
+
+          <div class="search-row">
+            <input id="searchInput" type="text" placeholder="Buscar producto por nombre o código..." />
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Depósito</th>
+                  <th>Local</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableBody"></tbody>
+            </table>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
