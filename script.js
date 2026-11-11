@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const productName = document.createElement('div');
       productName.textContent = product.name;
       productCell.append(productName);
+      productCell.dataset.label = 'Producto';
 
       if (product.code) {
         const productCode = document.createElement('small');
@@ -53,17 +54,25 @@ document.addEventListener('DOMContentLoaded', () => {
         productCell.append(productCode);
       }
 
-      [productCell, product.deposit, product.local, total, total <= 3 ? 'Reponer' : 'Disponible'].forEach((value) => {
+      [
+        [productCell, 'Producto'],
+        [product.deposit, 'Depósito'],
+        [product.local, 'Local'],
+        [total, 'Total'],
+        [total <= 3 ? 'Reponer' : 'Disponible', 'Estado'],
+      ].forEach(([value, label]) => {
         if (value === productCell) {
           row.append(value);
           return;
         }
         const cell = document.createElement('td');
         cell.textContent = value;
+        cell.dataset.label = label;
         row.append(cell);
       });
 
       const actionsCell = document.createElement('td');
+      actionsCell.dataset.label = 'Acciones';
       const deleteButton = document.createElement('button');
       deleteButton.type = 'button';
       deleteButton.textContent = 'Eliminar';
