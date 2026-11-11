@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'farmacia-cruz-verde-inventory';
+const CHANNEL_NAME = 'farmacia-cruz-verde-channel';
 
 const readProducts = () => {
   try {
@@ -10,6 +11,17 @@ const readProducts = () => {
 };
 
 let products = readProducts();
+
+const syncAcrossTabs = (nextProducts) => {
+  products = nextProducts;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+
+  if ('BroadcastChannel' in window) {
+    const channel = new BroadcastChannel(CHANNEL_NAME);
+    channel.postMessage({ type: 'inventory-sync', products });
+    channel.close();
+  }
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   const nameInput = document.getElementById('productName');
@@ -80,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
       deleteButton.addEventListener('click', () => {
         products.splice(index, 1);
         persistProducts();
+        syncAcrossTabs(products);
         renderProducts();
       });
       actionsCell.append(deleteButton);
@@ -98,6 +111,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  if ('BroadcastChannel' in window) {
+    const channel = new BroadcastChannel(CHANNEL_NAME);
+    channel.addEventListener('message', (event) => {
+      const payload = event.data;
+      if (payload && payload.type === 'inventory-sync') {
+        products = Array.isArray(payload.products) ? payload.products : readProducts();
+        renderProducts();
+      }
+    });
+    window.addEventListener('beforeunload', () => channel.close());
+  }
+
+  window.addEventListener('storage', (event) => {
+    if (event.key === STORAGE_KEY) {
+      products = readProducts();
+      renderProducts();
+    }
+  });
+
   saveButton.addEventListener('click', () => {
     const name = nameInput.value.trim();
     const deposit = Number(depositInput.value);
@@ -115,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
       deposit,
       local,
     });
-    persistProducts();
+    syncAcrossTabs(products);
     renderProducts();
 
     nameInput.value = '';
