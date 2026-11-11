@@ -1,0 +1,170 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f7fb;
+  color: #1f2937;
+}
+
+.app-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.top-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.metric-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.metric-label {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.metric-value {
+  margin-top: 10px;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.warning {
+  color: #d93025;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 24px;
+}
+
+.panel {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.field-group {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.required {
+  color: #d93025;
+}
+
+input, button {
+  font: inherit;
+}
+
+input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+button {
+  cursor: pointer;
+}
+
+.save-btn {
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background: #0f766e;
+  color: white;
+  padding: 12px;
+  font-weight: 700;
+}
+
+.warning-note {
+  margin-top: 18px;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.inventory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.search-row {
+  margin-bottom: 16px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
+}
+
+th {
+  background: #f9fafb;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #4b5563;
+}
+
+small {
+  display: block;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+button.csv-btn {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #1f2937;
+  border-radius: 8px;
+  padding: 9px 14px;
+}
+
+button[aria-label^='Eliminar'] {
+  background: #fee2e2;
+  color: #991b1b;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+@media (max-width: 860px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .top-metrics {
+    grid-template-columns: 1fr;
+  }
+}
